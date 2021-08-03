@@ -1,0 +1,35 @@
+### list of the address
+GET http://localhost:8080/api/addresses
+Accept: application/json
+
+
+### create a new address
+POST http://localhost:8080/api/addresses
+Content-Type: application/json
+Accept: application/json
+
+{
+"city": "Budapest",
+"zipCode": "1000",
+"streetHouse": "Main street 1, 1st floor 4th door.",
+"comment": "doorbell: 14"
+}
+
+
+### update a address
+PUT http://localhost:8080/api/addresses/1
+Content-Type: application/json
+Accept: application/json
+
+{
+"city": "Ököritó-fülpös",
+"zipCode": "4001",
+"streetHouse": "Side street 0.",
+"comment": "no comment"
+}
+
+
+### delete a address
+DELETE http://localhost:8080/api/addresses/1
+Content-Type: application/json
+Accept: application/json
