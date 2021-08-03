@@ -1,0 +1,31 @@
+### list of the product category types
+GET http://localhost:8080/api/productcategorytypes
+Accept: application/json
+
+
+### create a new product category types
+POST http://localhost:8080/api/productcategorytypes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productCategoryType": "entertainment electronics",
+  "description": "Electronic equipment that used for entertainment at home."
+}
+
+
+### update a product category types
+PUT http://localhost:8080/api/productcategorytypes/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productCategoryType": "modified entertainment electronics",
+  "description": "modified Electronic equipment that used for entertainment at home."
+}
+
+
+### delete a product category types
+DELETE http://localhost:8080/api/productcategorytypes/1
+Content-Type: application/json
+Accept: application/json
