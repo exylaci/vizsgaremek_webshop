@@ -1,0 +1,35 @@
+### list of the customer
+GET http://localhost:8080/api/customers
+Accept: application/json
+
+
+### create a new customer
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@mailserver.hu",
+  "deliveryAddressId": 1,
+  "invoiceAddressId": 1
+}
+
+
+### update a customer
+PUT http://localhost:8080/api/customers/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@mailserver.hu",
+  "deliveryAddressId": 2,
+  "invoiceAddressId": 2
+}
+
+
+### delete a customer
+DELETE http://localhost:8080/api/customers/1
+Content-Type: application/json
+Accept: application/json

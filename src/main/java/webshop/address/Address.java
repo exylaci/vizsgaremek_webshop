@@ -33,6 +33,10 @@ public class Address {
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "customer_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Customer> customers = new HashSet<>();
+
     public Address(String city, String zipCode, String streetHouse, String comment) {
         this.city = city;
         this.zipCode = zipCode;
