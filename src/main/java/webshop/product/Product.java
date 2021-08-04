@@ -35,7 +35,10 @@ public class Product {
     @ElementCollection
     @CollectionTable(name = "ratings", joinColumns = @JoinColumn(name = "product_id"))
 //    @Column(name = "rating")
-    private List<Integer> ratings = new ArrayList<>();
+    private List<Integer> ratings;
+
+    @Transient
+    private Double rating;
 
     @Column(name = "product_description")
     private String description;
@@ -47,4 +50,23 @@ public class Product {
         this.category = category;
         this.description = description;
     }
+
+    public void addRating(int rating) {
+        if (ratings == null) {
+            ratings = new ArrayList<>();
+        }
+        ratings.add(rating);
+    }
+
+    public void calculateRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            rating = null;
+        } else {
+            rating = ratings.stream()
+                    .mapToDouble(a -> a)
+                    .average()
+                    .orElse(0);
+        }
+    }
+
 }

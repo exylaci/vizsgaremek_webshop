@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddRatingCommand {
-    @NotNull
     @Min(value = 1)
     @Max(value = 5)
     private int rating;

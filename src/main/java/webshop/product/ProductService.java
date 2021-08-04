@@ -67,17 +67,17 @@ public class ProductService {
         return modelMapper.map(product, ProductDto.class);
     }
 
-    @Transactional
     public ProductDto addRating(long id, AddRatingCommand command) {
         Product product = repository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("There is no product with this id: " + id));
 
-        //todo Add this rating to the prevoius ones in the ratings datatable with this product_id, calculate the new current rating
+        product.addRating(command.getRating());
+        repository.save(product);
+        product.calculateRating();
 
         return modelMapper.map(product, ProductDto.class);
     }
-
 
     public void deleteProduct(long id) {
         repository.deleteById(id);
