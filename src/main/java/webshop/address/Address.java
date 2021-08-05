@@ -15,7 +15,6 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Tag(name = "Operations on address.")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

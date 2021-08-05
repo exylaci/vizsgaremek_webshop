@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+import webshop.customer.Customer;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
@@ -51,6 +52,16 @@ public class AddressService {
         address.setComment(command.getComment());
 
         return modelMapper.map(address, AddressDto.class);
+    }
+
+    @Transactional
+    public void addCustomer(Customer customer) {
+        Long id = customer.getId();;
+        Address address = repository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("There is no address with this id: " + id));
+
+        address.getCustomers().add(customer);
     }
 
     public void deleteAddress(long id) {

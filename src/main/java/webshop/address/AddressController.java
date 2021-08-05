@@ -6,11 +6,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/addresses")
-@Tag(name = "Operations on addresses")
+@Tag(name = "Operations on address")
 public class AddressController {
     private final AddressService service;
 
@@ -29,7 +30,8 @@ public class AddressController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "find an address", description = "Find one address in the addresses datatable.")
     @ApiResponse(responseCode = "404", description = "Address not found")
-    public AddressDto findAddress(@PathVariable("id") long id) {
+    public AddressDto findAddress(
+            @PathVariable("id") long id) {
         return service.findAddress(id);
     }
 
@@ -37,7 +39,8 @@ public class AddressController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create new address", description = "Create a new address and store it in the addresses datatable.")
     @ApiResponse(responseCode = "281", description = "Address has been created successfully.")
-    public AddressDto createAddress(@RequestBody CreateUpdateAddressCommand command) {
+    public AddressDto createAddress(
+            @Valid @RequestBody CreateUpdateAddressCommand command) {
         return service.createAddress(command);
     }
 
@@ -47,7 +50,7 @@ public class AddressController {
     @ApiResponse(responseCode = "404", description = "Address not found")
     public AddressDto updateAddress(
             @PathVariable("id") long id,
-            @RequestBody CreateUpdateAddressCommand command) {
+            @Valid @RequestBody CreateUpdateAddressCommand command) {
         return service.updateAddress(id, command);
     }
 
