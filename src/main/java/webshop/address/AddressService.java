@@ -56,7 +56,8 @@ public class AddressService {
 
     @Transactional
     public void addCustomer(Customer customer) {
-        Long id = customer.getId();;
+        Long id = customer.getId();
+        ;
         Address address = repository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("There is no address with this id: " + id));
@@ -67,5 +68,17 @@ public class AddressService {
     public void deleteAddress(long id) {
 // It should be checked whether it is used by other entity.
         repository.deleteById(id);
+    }
+
+    public boolean codeValidator(String code) {
+        if (code.length() != 4) {
+            return false;
+        }
+        for (int i = 0; i < 4; ++i) {
+            if (!Character.isDigit(code.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }

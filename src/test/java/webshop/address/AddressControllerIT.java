@@ -1,19 +1,21 @@
 package webshop.address;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(statements = "delete from addresses")
@@ -100,5 +102,17 @@ public class AddressControllerIT {
         assertThat(expected)
                 .extracting(AddressDto::getId)
                 .doesNotContain(id);
+    }
+
+    @RepeatedTest(value = 3)
+    void testZipCodeValidator(RepetitionInfo info) {
+        int round = info.getCurrentRepetition() - 1;
+        String[] zipCodes = {"123", "12345", "abcd"};
+
+        assertThrows(RestClientException.class, () ->
+                template.postForObject(
+                        "/api/addresses",
+                        new CreateUpdateAddressCommand("Győr", zipCodes[round], "Main street 2", null),
+                        AddressDto.class));
     }
 }

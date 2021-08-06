@@ -17,8 +17,7 @@ public class CreateUpdateAddressCommand {
     @Schema(example = "Budapest", description = "Name of the city.")
     private String city;
 
-    //todo ellenőrzés, hogy pontosan csak 4 db számjegyből áll-e.
-    //    @IsValidZipCode
+    @IsValidZipCode
     @NotNull
     @NotBlank
     @Schema(example = "1000", description = "ZIP code.")
