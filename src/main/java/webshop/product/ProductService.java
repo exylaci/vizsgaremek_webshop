@@ -4,17 +4,12 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
-import webshop.address.Address;
-import webshop.address.AddressRepository;
 import webshop.category.ProductCategoryType;
 import webshop.category.ProductCategoryTypeRepository;
-import webshop.customer.CreateUpdateCustomerCommand;
-import webshop.customer.Customer;
-import webshop.customer.CustomerDto;
-import webshop.customer.CustomerRepository;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,9 +27,7 @@ public class ProductService {
     }
 
     public ProductDto findProduct(long id) {
-        Product product = repository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with this id: " + id));
+        Product product = getProductWithRatings(id);
         return modelMapper.map(product, ProductDto.class);
     }
 
@@ -42,9 +35,10 @@ public class ProductService {
         ProductCategoryType category = categoryRepository.getById(command.getCategory());
         Product product = new Product(
                 command.getName(),
-                command.getUnitPprice(),
+                command.getUnitPrice(),
                 command.getPiece(),
                 category,
+                new ArrayList<>(),
                 command.getDescription());
 
         repository.save(product);
@@ -59,7 +53,7 @@ public class ProductService {
         ProductCategoryType category = categoryRepository.getById(command.getCategory());
 
         product.setName(command.getName());
-        product.setUnitPrice(command.getUnitPprice());
+        product.setUnitPrice(command.getUnitPrice());
         product.setPiece(command.getPiece());
         product.setCategory(category);
         product.setDescription(command.getDescription());
@@ -68,9 +62,7 @@ public class ProductService {
     }
 
     public ProductDto addRating(long id, AddRatingCommand command) {
-        Product product = repository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with this id: " + id));
+        Product product = getProductWithRatings(id);
 
         product.addRating(command.getRating());
         repository.save(product);
@@ -81,5 +73,17 @@ public class ProductService {
 
     public void deleteProduct(long id) {
         repository.deleteById(id);
+    }
+
+    @Transactional(value = Transactional.TxType.MANDATORY)
+    public Product getProductWithRatings(long id) {
+        Product product = repository
+                .findProductWithRatings(id)
+                .stream()
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("There is no product with this id: " + id));
+        product.calculateRating();
+
+        return product;
     }
 }

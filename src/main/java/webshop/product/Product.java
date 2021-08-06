@@ -29,25 +29,24 @@ public class Product {
     private int piece;
 
     @OneToOne
-    @Column(name = "category_id")
     private ProductCategoryType category;
 
     @ElementCollection
     @CollectionTable(name = "ratings", joinColumns = @JoinColumn(name = "product_id"))
-//    @Column(name = "rating")
-    private List<Integer> ratings;
+    private List<Integer> ratings = new ArrayList<>();
 
     @Transient
-    private Double rating;
+    private double rating;
 
     @Column(name = "product_description")
     private String description;
 
-    public Product(String name, int unitPrice, int piece, ProductCategoryType category, String description) {
+    public Product(String name, int unitPrice, int piece, ProductCategoryType category, List<Integer> ratings, String description) {
         this.name = name;
         this.unitPrice = unitPrice;
         this.piece = piece;
         this.category = category;
+        this.ratings = ratings;
         this.description = description;
     }
 
@@ -59,14 +58,16 @@ public class Product {
     }
 
     public void calculateRating() {
+        System.out.println("Itt járunk: minden előtt");
         if (ratings == null || ratings.isEmpty()) {
-            rating = null;
+            System.out.println("Itt járunk: nullnak / üresnek gondolja");
+            rating = 0;
         } else {
+            System.out.println("Itt járunk: számolja");
             rating = ratings.stream()
                     .mapToDouble(a -> a)
                     .average()
                     .orElse(0);
         }
     }
-
 }

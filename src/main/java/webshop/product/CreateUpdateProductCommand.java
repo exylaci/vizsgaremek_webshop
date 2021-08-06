@@ -19,8 +19,8 @@ public class CreateUpdateProductCommand {
     @Schema(example = "TV", description = "The name of the product.")
     private String name;
 
-    @Schema(example = "1234", description = "Unitprice of the product.")
-    private int unitPprice;
+    @Schema(example = "1234", description = "Unit price of the product.")
+    private int unitPrice;
 
     @Schema(example = "17", description = "How many pieces are in the store.")
     private int piece;

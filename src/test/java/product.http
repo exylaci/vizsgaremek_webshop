@@ -1,0 +1,68 @@
+### list of the products
+GET http://localhost:8080/api/products
+Accept: application/json
+
+### list of the products
+GET http://localhost:8080/api/products/1
+Accept: application/json
+
+
+### create a new category
+POST http://localhost:8080/api/productcategorytypes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productCategoryType": "entertainment electronics",
+  "description": "Electronic equipment that used for entertainment at home."
+}
+
+### create a new product
+POST http://localhost:8080/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "TV",
+  "unitPrice": "1234",
+  "piece": "17",
+  "category": "1",
+  "description": "Detailed description about this product."
+}
+
+### add rating to product
+POST http://localhost:8080/api/products/1/ratings
+Content-Type: application/json
+Accept: application/json
+
+{
+  "rating": "3"
+}
+
+### add rating to product
+POST http://localhost:8080/api/products/1/ratings
+Content-Type: application/json
+Accept: application/json
+
+{
+  "rating": "2"
+}
+
+### update a product
+PUT http://localhost:8080/api/products/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "radio",
+  "unitPrice": "4321",
+  "piece": "5",
+  "category": "2",
+  "description": "modified description about this product."
+}
+
+
+### delete a product
+DELETE http://localhost:8080/api/products/1
+Content-Type: application/json
+Accept: application/json

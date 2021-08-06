@@ -14,10 +14,10 @@ public class ProductDto {
     private int unitPrice;
     private int piece;
     private ProductCategoryType category;
-    private Double rating;
+    private double rating;
     private String description;
 
-    public ProductDto(String name, int unitPrice, int piece, ProductCategoryType category, Double rating, String description) {
+    public ProductDto(String name, int unitPrice, int piece, ProductCategoryType category, double rating, String description) {
         this.name = name;
         this.unitPrice = unitPrice;
         this.piece = piece;

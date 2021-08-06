@@ -9,11 +9,12 @@ import webshop.customer.CreateUpdateCustomerCommand;
 import webshop.customer.CustomerDto;
 import webshop.customer.CustomerService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-@Tag(name = "Operations on customer")
+@Tag(name = "Operations on product")
 public class ProductController {
     private final ProductService service;
 
@@ -32,17 +33,19 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "find a product", description = "Find one product in the products datatable.")
     @ApiResponse(responseCode = "404", description = "Product not found")
-    public ProductDto findProduct(@PathVariable("id") long id) {
+    public ProductDto findProduct(
+            @PathVariable("id") long id) {
         return service.findProduct(id);
     }
 
-    //todo prepare further queries: list by category, order by price, ratings, etc
+    // todo prepare further queries: list by category, order by price, ratings, etc
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create new product", description = "Create a new product and store it in the products datatable.")
     @ApiResponse(responseCode = "281", description = "Product has been created successfully.")
-    public ProductDto createProduct(@RequestBody CreateUpdateProductCommand command) {
+    public ProductDto createProduct(
+            @Valid @RequestBody CreateUpdateProductCommand command) {
         return service.createProduct(command);
     }
 
@@ -62,8 +65,8 @@ public class ProductController {
     @ApiResponse(responseCode = "281", description = "Further rating has been added successfully.")
     public ProductDto addRating(
             @PathVariable("id") long id,
-            @RequestBody AddRatingCommand command) {
-        return service.addRating(id,command);
+            @Valid @RequestBody AddRatingCommand command) {
+        return service.addRating(id, command);
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package webshop.address;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +34,8 @@ public class Address {
     private String comment;
 
     @Column(name = "customer_id")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
+    @JsonIgnore
     private Set<Customer> customers = new HashSet<>();
 
     public Address(String city, String zipCode, String streetHouse, String comment) {
