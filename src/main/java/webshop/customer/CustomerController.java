@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,8 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "find a customer", description = "Find one customer in the customers datatable.")
     @ApiResponse(responseCode = "404", description = "Customer not found")
-    public CustomerDto findCustomer(@PathVariable("id") long id) {
+    public CustomerDto findCustomer(
+            @PathVariable("id") long id) {
         return service.findCustomer(id);
     }
 
@@ -37,7 +39,8 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create new customer", description = "Create a new customer and store it in the customers datatable.")
     @ApiResponse(responseCode = "281", description = "Customer has been created successfully.")
-    public CustomerDto createCustomer(@RequestBody CreateUpdateCustomerCommand command) {
+    public CustomerDto createCustomer(
+            @Valid @RequestBody CreateUpdateCustomerCommand command) {
         return service.createCustomer(command);
     }
 
@@ -47,12 +50,12 @@ public class CustomerController {
     @ApiResponse(responseCode = "404", description = "Customer not found")
     public CustomerDto updateCustomer(
             @PathVariable("id") long id,
-            @RequestBody CreateUpdateCustomerCommand command) {
+            @Valid @RequestBody CreateUpdateCustomerCommand command) {
         return service.updateCustomer(id, command);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "delete an customer", description = "Delete an existing customer from the customer datatable.")
+    @Operation(summary = "delete an customer", description = "Delete an existing customer from the customers datatable.")
     @ApiResponse(responseCode = "404", description = "Customer not found")
     public void deleteCustomer(
             @PathVariable("id") long id) {

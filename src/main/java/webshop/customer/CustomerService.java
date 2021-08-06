@@ -8,6 +8,7 @@ import webshop.address.Address;
 import webshop.address.AddressDto;
 import webshop.address.AddressRepository;
 import webshop.address.CreateUpdateAddressCommand;
+import webshop.exception.NotFindException;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
@@ -30,7 +31,7 @@ public class CustomerService {
     public CustomerDto findCustomer(long id) {
         Customer customer = customerRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no customer with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/customers","There is no customer with this id: " + id));
         return modelMapper.map(customer, CustomerDto.class);
     }
 
@@ -53,7 +54,7 @@ public class CustomerService {
     public CustomerDto updateCustomer(long id, CreateUpdateCustomerCommand command) {
         Customer customer = customerRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no customer with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/customers","There is no customer with this id: " + id));
         Address deliveryAddress = addressRepository.findById( command.getDeliveryAddressId()).get();
         Address invoiceAddress = addressRepository.findById( command.getInvoiceAddressId()).get();
 

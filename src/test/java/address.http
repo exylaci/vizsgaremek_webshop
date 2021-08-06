@@ -3,6 +3,11 @@ GET http://localhost:8080/api/addresses
 Accept: application/json
 
 
+### find an address
+GET http://localhost:8080/api/addresses/7
+Accept: application/json
+
+
 ### create a new address
 POST http://localhost:8080/api/addresses
 Content-Type: application/json

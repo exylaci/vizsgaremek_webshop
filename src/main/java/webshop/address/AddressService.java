@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import webshop.customer.Customer;
+import webshop.exception.NotFindException;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
@@ -26,7 +27,7 @@ public class AddressService {
     public AddressDto findAddress(long id) {
         Address address = repository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no address with this id: " + id));
+                .orElseThrow(() ->  new NotFindException("/api/addresses","There is no address with this id: " + id));
         return modelMapper.map(address, AddressDto.class);
     }
 
@@ -44,7 +45,7 @@ public class AddressService {
     public AddressDto updateAddress(long id, CreateUpdateAddressCommand command) {
         Address address = repository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no address with this id: " + id));
+                .orElseThrow(() ->  new NotFindException("/api/addresses","There is no address with this id: " + id));
 
         address.setCity(command.getCity());
         address.setZipCode(command.getZipCode());
@@ -60,7 +61,7 @@ public class AddressService {
         ;
         Address address = repository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no address with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/addresses","There is no address with this id: " + id));
 
         address.getCustomers().add(customer);
     }

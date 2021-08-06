@@ -6,6 +6,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import webshop.category.ProductCategoryType;
 import webshop.category.ProductCategoryTypeRepository;
+import webshop.exception.NotFindException;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
@@ -49,7 +50,7 @@ public class ProductService {
     public ProductDto updateProduct(long id, CreateUpdateProductCommand command) {
         Product product = repository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/products","There is no product with this id: " + id));
         ProductCategoryType category = categoryRepository.getById(command.getCategory());
 
         product.setName(command.getName());
@@ -81,7 +82,7 @@ public class ProductService {
                 .findProductWithRatings(id)
                 .stream()
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/products","There is no product with this id: " + id));
         product.calculateRating();
 
         return product;
