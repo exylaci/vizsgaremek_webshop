@@ -43,7 +43,7 @@ public class ProductCategoryTypeService {
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("There is no product category type with this id: " + id));
         productCategoryType.setProductCategoryType(command.getProductCategoryType());
-        productCategoryType.setProductCategoryType(command.getDescription());
+        productCategoryType.setDescription(command.getDescription());
         return modelMapper.map(productCategoryType, ProductCategoryTypeDto.class);
     }
 

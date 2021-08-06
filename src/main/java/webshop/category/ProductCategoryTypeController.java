@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,8 @@ public class ProductCategoryTypeController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "find a ProductCategoryType", description = "Find one customer in the product_category_types datatable.")
     @ApiResponse(responseCode = "404", description = "ProductCategoryType not found")
-    public ProductCategoryTypeDto findProductCategoryType(@PathVariable("id") long id) {
+    public ProductCategoryTypeDto findProductCategoryType(
+            @PathVariable("id") long id) {
         return service.findProductCategoryType(id);
     }
 
@@ -37,7 +39,8 @@ public class ProductCategoryTypeController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create new ProductCategoryType", description = "Create a new ProductCategoryType and store it in the product_category_type datatable.")
     @ApiResponse(responseCode = "281", description = "ProductCategoryType has been created successfully.")
-    public ProductCategoryTypeDto createProductCategoryType(@RequestBody CreateUpdateProductCategoryTypeCommand command) {
+    public ProductCategoryTypeDto createProductCategoryType(
+            @Valid @RequestBody CreateUpdateProductCategoryTypeCommand command) {
         return service.createProductCategoryType(command);
     }
 
@@ -47,7 +50,7 @@ public class ProductCategoryTypeController {
     @ApiResponse(responseCode = "404", description = "ProductCategoryType not found")
     public ProductCategoryTypeDto updateProductCategoryType(
             @PathVariable("id") long id,
-            @RequestBody CreateUpdateProductCategoryTypeCommand command) {
+            @Valid @RequestBody CreateUpdateProductCategoryTypeCommand command) {
         return service.updateProductCategoryType(id, command);
     }
 
