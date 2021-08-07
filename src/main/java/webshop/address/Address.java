@@ -1,7 +1,6 @@
 package webshop.address;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,6 @@ public class Address {
     @Column(name = "comment")
     private String comment;
 
-    @Column(name = "customer_id")
     @OneToMany
     @JsonIgnore
     private Set<Customer> customers = new HashSet<>();
