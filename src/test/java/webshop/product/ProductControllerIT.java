@@ -1,6 +1,5 @@
 package webshop.product;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +8,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.jdbc.Sql;
-import webshop.address.AddressDto;
-import webshop.address.CreateUpdateAddressCommand;
 import webshop.category.CreateUpdateProductCategoryTypeCommand;
-import webshop.category.ProductCategoryType;
 import webshop.category.ProductCategoryTypeDto;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,31 +39,15 @@ public class ProductControllerIT {
                 ProductCategoryTypeDto.class);
         categoryId = productCategoryTypeDto.getId();
 
-        try {
-            ProductDto productDto = template.postForObject(
-                    "/api/products",
-                    new CreateUpdateProductCommand("TV", 1234, 17, tempId, "8Q OLED 128cm"),
-                    ProductDto.class);
-            id = productDto.getId();
-        } catch (Exception e) {
-            id = template.exchange(
-                    "/api/products",
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<ProductDto>>() {
-                    }).getBody()
-                    .stream()
-                    .findAny()
-                    .get()
-                    .getId();
-        }
-        try {
-            template.postForObject(
-                    "/api/products",
-                    new CreateUpdateProductCommand("paper", 21, 39, tempId, "A4 size 1000 pages per pack."),
-                    ProductDto.class);
-        } catch (Exception e) {
-        }
+        ProductDto productDto = template.postForObject(
+                "/api/products",
+                new CreateUpdateProductCommand("TV", 1234, 17, tempId, "8Q OLED 128cm"),
+                ProductDto.class);
+        id = productDto.getId();
+        template.postForObject(
+                "/api/products",
+                new CreateUpdateProductCommand("paper", 21, 39, tempId, "A4 size 1000 pages per pack."),
+                ProductDto.class);
     }
 
     @Test

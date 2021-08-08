@@ -28,7 +28,7 @@ public class Product {
     @Column(name = "piece")
     private int piece;
 
-    @OneToOne
+    @ManyToOne
     private ProductCategoryType category;
 
     @ElementCollection
@@ -58,12 +58,9 @@ public class Product {
     }
 
     public void calculateRating() {
-        System.out.println("Itt járunk: minden előtt");
         if (ratings == null || ratings.isEmpty()) {
-            System.out.println("Itt járunk: nullnak / üresnek gondolja");
             rating = 0;
         } else {
-            System.out.println("Itt járunk: számolja");
             rating = ratings.stream()
                     .mapToDouble(a -> a)
                     .average()
