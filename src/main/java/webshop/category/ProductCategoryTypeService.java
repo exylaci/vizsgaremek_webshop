@@ -26,7 +26,7 @@ public class ProductCategoryTypeService {
     public ProductCategoryTypeDto findProductCategoryType(long id) {
         ProductCategoryType productCategoryType = repository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/productcategorytypes","There is no product category type with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/productcategorytypes", "There is no product category type with this id: " + id));
         return modelMapper.map(productCategoryType, ProductCategoryTypeDto.class);
     }
 
@@ -42,7 +42,7 @@ public class ProductCategoryTypeService {
     public ProductCategoryTypeDto updateProductCategoryType(long id, CreateUpdateProductCategoryTypeCommand command) {
         ProductCategoryType productCategoryType = repository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/productcategorytypes","There is no product category type with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/productcategorytypes", "There is no product category type with this id: " + id));
         productCategoryType.setProductCategoryType(command.getProductCategoryType());
         productCategoryType.setDescription(command.getDescription());
         return modelMapper.map(productCategoryType, ProductCategoryTypeDto.class);

@@ -5,9 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import webshop.address.Address;
-import webshop.address.AddressDto;
 import webshop.address.AddressRepository;
-import webshop.address.CreateUpdateAddressCommand;
 import webshop.exception.NotFindException;
 
 import javax.transaction.Transactional;
@@ -31,13 +29,17 @@ public class CustomerService {
     public CustomerDto findCustomer(long id) {
         Customer customer = customerRepository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/customers","There is no customer with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/customers", "There is no customer with this id: " + id));
         return modelMapper.map(customer, CustomerDto.class);
     }
 
     public CustomerDto createCustomer(CreateUpdateCustomerCommand command) {
-        Address deliveryAddress = addressRepository.findById( command.getDeliveryAddressId()).get();
-        Address invoiceAddress = addressRepository.findById( command.getInvoiceAddressId()).get();
+        Address deliveryAddress = addressRepository
+                .findById(command.getDeliveryAddressId())
+                .orElseThrow(() -> new NotFindException("/api/customers", "There is no delivery address with this id: " + command.getDeliveryAddressId()));
+        Address invoiceAddress = addressRepository
+                .findById(command.getInvoiceAddressId())
+                .orElseThrow(() -> new NotFindException("/api/customers", "There is no invoicing address with this id: " + command.getInvoiceAddressId()));
         Customer customer = new Customer(
                 command.getName(),
                 command.getEmail(),
@@ -46,7 +48,6 @@ public class CustomerService {
                 command.getComment());
 
         customerRepository.save(customer);
-//        deliveryAddress.addCustomer(customer);
         return modelMapper.map(customer, CustomerDto.class);
     }
 
@@ -54,9 +55,11 @@ public class CustomerService {
     public CustomerDto updateCustomer(long id, CreateUpdateCustomerCommand command) {
         Customer customer = customerRepository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/customers","There is no customer with this id: " + id));
-        Address deliveryAddress = addressRepository.findById( command.getDeliveryAddressId()).get();
-        Address invoiceAddress = addressRepository.findById( command.getInvoiceAddressId()).get();
+                .orElseThrow(() -> new NotFindException("/api/customers", "There is no customer with this id: " + id));
+        Address deliveryAddress = addressRepository.findById(command.getDeliveryAddressId())
+                .orElseThrow(() -> new NotFindException("/api/customers", "There is no delivery address with this id: " + command.getDeliveryAddressId()));
+        Address invoiceAddress = addressRepository.findById(command.getInvoiceAddressId())
+                .orElseThrow(() -> new NotFindException("/api/customers", "There is no invoicing address with this id: " + command.getInvoiceAddressId()));
 
         customer.setName(command.getName());
         customer.setEmail(command.getEmail());

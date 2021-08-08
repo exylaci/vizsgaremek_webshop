@@ -27,7 +27,7 @@ public class AddressService {
     public AddressDto findAddress(long id) {
         Address address = repository
                 .findById(id)
-                .orElseThrow(() ->  new NotFindException("/api/addresses","There is no address with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/addresses", "There is no address with this id: " + id));
         return modelMapper.map(address, AddressDto.class);
     }
 
@@ -45,7 +45,7 @@ public class AddressService {
     public AddressDto updateAddress(long id, CreateUpdateAddressCommand command) {
         Address address = repository
                 .findById(id)
-                .orElseThrow(() ->  new NotFindException("/api/addresses","There is no address with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/addresses", "There is no address with this id: " + id));
 
         address.setCity(command.getCity());
         address.setZipCode(command.getZipCode());
@@ -61,13 +61,12 @@ public class AddressService {
         ;
         Address address = repository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/addresses","There is no address with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/addresses", "There is no address with this id: " + id));
 
         address.getCustomers().add(customer);
     }
 
     public void deleteAddress(long id) {
-// It should be checked whether it is used by other entity.
         repository.deleteById(id);
     }
 

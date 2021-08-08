@@ -1,7 +1,5 @@
 package webshop.customer;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,12 +23,10 @@ public class Customer {
     @Column(name = "email_address")
     private String email;
 
-//    @Column(name = "delivery_address_id")
     @ManyToOne
     @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddressId;
 
-//    @Column(name = "invoice_address_id")
     @ManyToOne
     @JoinColumn(name = "invoice_address_id")
     private Address invoiceAddressId;

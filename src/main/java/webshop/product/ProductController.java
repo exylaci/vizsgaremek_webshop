@@ -5,9 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import webshop.customer.CreateUpdateCustomerCommand;
-import webshop.customer.CustomerDto;
-import webshop.customer.CustomerService;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -1,4 +1,5 @@
 package webshop.product;
+
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -34,7 +35,7 @@ public class ProductService {
     public ProductDto createProduct(CreateUpdateProductCommand command) {
         ProductCategoryType category = categoryRepository
                 .findById(command.getCategory())
-                .orElseThrow(()->new NotFindException("/api/products","There is no category with this id: " + command.getCategory()));
+                .orElseThrow(() -> new NotFindException("/api/products", "There is no category with this id: " + command.getCategory()));
         Product product = new Product(
                 command.getName(),
                 command.getUnitPrice(),
@@ -51,10 +52,10 @@ public class ProductService {
     public ProductDto updateProduct(long id, CreateUpdateProductCommand command) {
         Product product = repository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/products","There is no product with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/products", "There is no product with this id: " + id));
         ProductCategoryType category = categoryRepository
                 .findById(command.getCategory())
-                .orElseThrow(() -> new NotFindException("/api/products","There is no category with this id: " + command.getCategory()));
+                .orElseThrow(() -> new NotFindException("/api/products", "There is no category with this id: " + command.getCategory()));
 
         product.setName(command.getName());
         product.setUnitPrice(command.getUnitPrice());
@@ -85,7 +86,7 @@ public class ProductService {
                 .findProductWithRatings(id)
                 .stream()
                 .findAny()
-                .orElseThrow(() -> new NotFindException("/api/products","There is no product with this id: " + id));
+                .orElseThrow(() -> new NotFindException("/api/products", "There is no product with this id: " + id));
         product.calculateRating();
 
         return product;
