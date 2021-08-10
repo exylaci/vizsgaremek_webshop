@@ -35,7 +35,27 @@ public class ProductController {
         return service.findProduct(id);
     }
 
-    // todo prepare further queries: list by category, order by price, ratings, etc
+    @GetMapping("/prices/increasing")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "get products", description = "Create a list from the all products ordered by increasing price.")
+    public List<ProductDto> getProductsIncreasingPrices() {
+        return service.getProductsIncreasingPrices();
+    }
+
+    @GetMapping("/ratings/decreasing")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "get products", description = "Create a list from the all products ordered by decreasing ratings.")
+    public List<ProductDto> getProductsDecreasingRatings() {
+        return service.getProductsDecreasingRatings();
+    }
+
+    @GetMapping("/category/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "get products", description = "Create a list from the products filtered by category.")
+    public List<ProductDto> getProductsFilteredByCategories(
+            @PathVariable("id") long id) {
+        return service.getProductsFilteredByCategory(id);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

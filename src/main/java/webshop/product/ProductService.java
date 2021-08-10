@@ -11,6 +11,7 @@ import webshop.exception.NotFindException;
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,10 +33,41 @@ public class ProductService {
         return modelMapper.map(product, ProductDto.class);
     }
 
-    public ProductDto createProduct(CreateUpdateProductCommand command) {
+    public List<ProductDto> getProductsIncreasingPrices() {
+        Type targetListType = new TypeToken<List<ProductDto>>() {
+        }.getType();
+        List<Product> products = repository.findProductOrderedByPrices();
+        return modelMapper.map(products, targetListType);
+    }
+
+    public List<ProductDto> getProductsDecreasingRatings() {
+        Type targetListType = new TypeToken<List<ProductDto>>() {
+        }.getType();
+
+        List<Product> products = repository.getProductsWithRatings()
+                .stream()
+                .peek(Product::calculateRating)
+                .distinct()
+                .sorted(Comparator.comparing(Product::getRating).reversed())
+                .toList();
+
+        return modelMapper.map(products, targetListType);
+    }
+
+    public List<ProductDto> getProductsFilteredByCategory(long id) {
+        Type targetListType = new TypeToken<List<ProductDto>>() {
+        }.getType();
+
         ProductCategoryType category = categoryRepository
-                .findById(command.getCategory())
-                .orElseThrow(() -> new NotFindException("/api/products", "There is no category with this id: " + command.getCategory()));
+                .findById(id)
+                .orElseThrow(() -> new NotFindException("/api/products", "There is no category with this id: "));
+        List<Product> products = repository.getProductsFilteredByCategory(category);
+
+        return modelMapper.map(products, targetListType);
+    }
+
+    public ProductDto createProduct(CreateUpdateProductCommand command) {
+        ProductCategoryType category = getProductCategoryType(command);
         Product product = new Product(
                 command.getName(),
                 command.getUnitPrice(),
@@ -46,6 +78,12 @@ public class ProductService {
 
         repository.save(product);
         return modelMapper.map(product, ProductDto.class);
+    }
+
+    private ProductCategoryType getProductCategoryType(CreateUpdateProductCommand command) {
+        return categoryRepository
+                .findById(command.getCategory())
+                .orElseThrow(() -> new NotFindException("/api/products", "There is no category with this id: " + command.getCategory()));
     }
 
     @Transactional

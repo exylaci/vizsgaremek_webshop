@@ -9,6 +9,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.jdbc.Sql;
 import webshop.category.CreateUpdateProductCategoryTypeCommand;
+import webshop.category.ProductCategoryType;
 import webshop.category.ProductCategoryTypeDto;
 
 import java.util.List;
@@ -64,7 +65,62 @@ public class ProductControllerIT {
 
         assertThat(expected)
                 .extracting(ProductDto::getName)
-                .containsExactly("TV", "paper");
+                .containsExactlyInAnyOrder("TV", "paper");
+    }
+
+    @Test
+    void testGetProductsByIncreasingPrices() {
+        List<ProductDto> expected = template.exchange(
+                "/api/products/prices/increasing",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<ProductDto>>() {
+                }).getBody();
+
+        assertThat(expected)
+                .extracting(ProductDto::getUnitPrice)
+                .containsExactly(21, 1234);
+    }
+
+    @Test
+    void testGetProductsByDecreasingRatings() {
+        template.postForObject(
+                "/api/products/" + id + "/ratings",
+                new AddRatingCommand(3),
+                ProductDto.class);
+        template.postForObject(
+                "/api/products/" + id + "/ratings",
+                new AddRatingCommand(2),
+                ProductDto.class);
+
+        List<ProductDto> expected = template.exchange(
+                "/api/products/ratings/decreasing",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<ProductDto>>() {
+                }).getBody();
+
+        assertThat(expected).extracting(ProductDto::getRating).containsExactly(2.5, 0.0);
+    }
+
+    @Test
+    void testGetProductsFilteredByCategory() {
+        template.postForObject(
+                "/api/products",
+                new CreateUpdateProductCommand("radio", 1000, 3, categoryId, "DAB compatible"),
+                ProductDto.class);
+
+        List<ProductDto> expected = template.exchange(
+                "/api/products/category/" + categoryId,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<ProductDto>>() {
+                }).getBody();
+
+        assertThat(expected)
+                .extracting(ProductDto::getCategory)
+                .extracting(ProductCategoryType::getId)
+                .containsExactly(categoryId);
     }
 
     @Test
