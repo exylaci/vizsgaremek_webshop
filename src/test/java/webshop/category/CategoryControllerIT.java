@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(statements = "delete from ordered_products")
+@Sql(statements = "delete from orders")
+@Sql(statements = "delete from ratings")
 @Sql(statements = "delete from products")
 @Sql(statements = "delete from product_category_types")
 public class CategoryControllerIT {

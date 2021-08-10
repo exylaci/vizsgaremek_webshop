@@ -48,10 +48,7 @@ public class OrderService {
     @Transactional
     public OrderDto addProduct(long id, AddUpdateProductCommand command) {
         Order order = getOrderWithProducts(id);
-        Product product = productRepository
-                .findById(command.getProduct_id())
-                .orElseThrow(() -> new NotFindException("/api/orders", "There is no product with this id: " + command.getProduct_id()));
-
+        Product product = findProduct(command.getProduct_id());
         Optional<OrderedProduct> orderedProduct =
                 order.getOrderedProducts()
                         .stream()
@@ -71,11 +68,12 @@ public class OrderService {
     public OrderDto deleteProduct(long orderId, long productId) {
         Order order = getOrderWithProducts(orderId);
         List<OrderedProduct> orderedProducts = order.getOrderedProducts();
-        Optional<OrderedProduct> orderedProduct = orderedProducts.stream().filter(o -> o.getProduct().getId() == productId).findAny();
+        Optional<OrderedProduct> orderedProduct = orderedProducts
+                .stream()
+                .filter(o -> o.getProduct().getId() == productId)
+                .findAny();
 
-        if (orderedProduct.isPresent()) {
-            orderedProducts.remove(orderedProduct.get());
-        }
+        orderedProduct.ifPresent(orderedProducts::remove);
 
         return modelMapper.map(order, OrderDto.class);
     }
@@ -83,9 +81,7 @@ public class OrderService {
     @Transactional
     public OrderDto updateProduct(long id, AddUpdateProductCommand command) {
         Order order = getOrderWithProducts(id);
-        Product product = productRepository
-                .findById(command.getProduct_id())
-                .orElseThrow(() -> new NotFindException("/api/orders", "There is no product with this id: " + command.getProduct_id()));
+        Product product =findProduct(command.getProduct_id());
         OrderedProduct orderedProduct =
                 order.getOrderedProducts()
                         .stream()
@@ -101,8 +97,8 @@ public class OrderService {
     public void deleteOrder(long id) {
         Order order = orderRepository
                 .findById(id)
-                .orElseThrow(() -> new NotFindException("/api/orders", "There is no product with this id: " + id));
-        if (order.getOrderDate() != null) {
+                .orElseThrow(() -> new NotFindException("/api/orders", "There is no order with this id: " + id));
+        if (order.getOrderDate() == null) {
             orderRepository.delete(order);
         }
     }
@@ -112,29 +108,43 @@ public class OrderService {
         Order order = orderRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFindException("/api/orders", "There is no product with this id: " + id));
+
+        if (order.getOrderedProducts() == null || order.getOrderedProducts().isEmpty()) {
+            throw new IllegalStateException("The ordered products list is empty!");
+        }
+
         if (order.getOrderDate() == null) {
-            for (OrderedProduct o : order.getOrderedProducts()) {
-                int orderedpieces = o.getPiece();
-                Product product = productRepository
-                        .findById(o.getProduct().getId())
-                        .orElseThrow(() -> new NotFindException("/api/orders", "There is no this product in the store: " + o.getProduct().getId()));
-                if (product.getPiece() < orderedpieces) {
-                    throw new IllegalStateException("There is not enough in the storage to fulfill this order! id: " + o.getProduct().getId());
-                }
-                product.setPiece(product.getPiece() - orderedpieces);
-            }
+            decreaseTheStoragedPieces(order);
             order.setOrderDate(LocalDate.now());
         }
 
         return modelMapper.map(order, OrderDto.class);
     }
 
-    @Transactional(value = Transactional.TxType.MANDATORY)
+    private void decreaseTheStoragedPieces(Order order) {
+        for (OrderedProduct o : order.getOrderedProducts()) {
+            int orderedPieces = o.getPiece();
+            Product product = productRepository
+                    .findById(o.getProduct().getId())
+                    .orElseThrow(() -> new NotFindException("/api/orders", "There is no this product in the store: " + o.getProduct().getId()));
+            if (product.getPiece() < orderedPieces) {
+                throw new IllegalStateException("There is not enough in the storage to fulfill this order! id: " + o.getProduct().getId());
+            }
+            product.setPiece(product.getPiece() - orderedPieces);
+        }
+    }
+
     public Order getOrderWithProducts(long id) {
         return orderRepository
                 .findOrderWithProducts(id)
                 .stream()
                 .findAny()
                 .orElseThrow(() -> new NotFindException("/api/orders", "There is no order with this id: " + id));
+    }
+
+    private Product findProduct(long id) {
+        return productRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFindException("/api/orders", "There is no product with this id: " + id));
     }
 }

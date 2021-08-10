@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(statements = "delete from addresses_customers")
+@Sql(statements = "delete from ordered_products")
+@Sql(statements = "delete from orders")
 @Sql(statements = "delete from customers")
 @Sql(statements = "delete from addresses")
 public class AddressControllerIT {

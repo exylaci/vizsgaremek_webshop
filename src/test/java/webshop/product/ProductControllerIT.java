@@ -17,8 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(statements = "delete from ordered_products")
+@Sql(statements = "delete from orders")
 @Sql(statements = "delete from ratings")
 @Sql(statements = "delete from products")
+@Sql(statements = "delete from product_category_types")
 public class ProductControllerIT {
     @Autowired
     TestRestTemplate template;

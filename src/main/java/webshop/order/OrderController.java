@@ -54,20 +54,20 @@ public class OrderController {
         return service.addProduct(id, command);
     }
 
-    @DeleteMapping("/{orderid}/products/{productis}")
+    @DeleteMapping("/{order_id}/products/{product_id}")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "delete product", description = "Delete the selected product from the ordered products list.")
     @ApiResponse(responseCode = "281", description = "Products has been deleted successfully from the product list of this order.")
     public OrderDto deleteProduct(
-            @PathVariable("orderid") long orderId,
-            @PathVariable("orderid") long productId) {
+            @PathVariable("order_id") long orderId,
+            @PathVariable("product_id") long productId) {
         return service.deleteProduct(orderId, productId);
     }
 
     @PutMapping("/{id}/products")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "modify product", description = "Modify the pieces of the selected product in the product list of the order.")
-    @ApiResponse(responseCode = "281", description = "Products has been added successfully to the product list of this order.")
+    @ApiResponse(responseCode = "281", description = "Pieces of  product has been modified successfully to the product list of this order.")
     public OrderDto updateProduct(
             @PathVariable("id") long id,
             @Valid @RequestBody AddUpdateProductCommand command) {
