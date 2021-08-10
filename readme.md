@@ -71,7 +71,7 @@ az `/api/orders` végponton.
 ### Nem-funkcionális követelmények
 Klasszikus háromrétegű alkalmazás, MariaDB adatbázissal, Java Spring backenddel, REST webszolgáltatásokkal.
 
-####Követelmények tételesen:
+#### Követelmények tételesen:
 * Hozz létre egy `README.md` fájlt, ami tartalmaz egy rövid leírást a projektről
 * SQL adatbázis kezelő réteg megvalósítása Spring Data JPA-val (`Repository`)
 * Flyway - a scriptek a funkciókkal együtt készüljenek, szóval ahogy bekerül az entitás, úgy kerüljön be egy
