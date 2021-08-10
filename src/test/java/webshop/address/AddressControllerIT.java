@@ -52,7 +52,7 @@ public class AddressControllerIT {
 
         assertThat(expected)
                 .extracting(AddressDto::getCity)
-                .containsExactly("Budapest", "Győr");
+                .containsExactlyInAnyOrder("Budapest", "Győr");
     }
 
     @Test

@@ -56,7 +56,7 @@ public class CategoryControllerIT {
 
         assertThat(expected)
                 .extracting(ProductCategoryTypeDto::getProductCategoryType)
-                .containsExactly("entertainment electronics", "office materials");
+                .containsExactlyInAnyOrder("entertainment electronics", "office materials");
     }
 
     @Test
