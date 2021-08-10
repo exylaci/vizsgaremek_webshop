@@ -1,4 +1,4 @@
-# Struktúraváltó - Junior Vállalati Java Backend vizsgaremek - webshop
+# Struktúraváltó • Junior Vállalati Java Backend • vizsgaremek • webshop
 
 ## Vízió
 
