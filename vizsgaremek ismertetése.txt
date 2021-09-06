@@ -1,0 +1,57 @@
+A vizsgaremekem egy webshop backend rész funkcióit valósítja meg.
+
+Ez a webáruház több kategóriában is kínál termékeket.
+Ezek a kategóriák szabadon 
+	bővíthetők, 
+	módosíthatók, vagy 
+	törölhetők.
+
+Lehetőség van az áruházba új terméket 
+	felvenni, 
+	törölni, 
+	vagy a termékek adatait igény szerint módosítani.
+A felhasználók, hogy segítsék a többi felhasználót, pontozhatják az egyes termékeket.
+Az ebből a pontozásból adódó átlagpont az adott termék lekérdezésekor megjelenik. (És csak az átlag pont jelenik meg, az, hogy ez milyen és hány pontból áll össze, az nem.)
+
+Az áruházból csak regisztrált ügyfelek vásárolhatnak. Ezért szükséges az ügyfelek adatainak kezelése is.
+Egy új ügyfél tud
+	regisztrálni,
+	van lehetősége a regisztráció során megadott adatait módosítani,
+	illetve törölheti is a regisztrációját.
+
+Természetesen a rendelés leadásakor, a megvásárolt mennyiséggel csökken a raktárkészletet.
+Ha nincs a kívánt mennyiség raktáron, a megrendelést vissza utasítja.
+Viszont egy leadott rendelés utólag már nem módosítható.
+
+Ezeket a funkciókat egy klasszikus 3 rétegű alkalmazás keretében, SpringBoot-tal és MariaDb-vel kezelt SQL adatbázisban tárolt adatokkal, Java programmal oldottam meg. Ez adja a REST web szolgáltatást, dolgozza fel a beérkezett http kéréseket.
+
+Ehhez 3 alap entitást és még további hozzájuk kapcsolódó 2 darab entitást használtam.
+	-A termékeket,
+	 és az ezek csoportosítását meghatározó szabadon bővíthető termék csoportokat.
+	-Az ügyfeleket,
+	 és a címeiket.
+	Itt azért tárolom külön a címeket, mert így megvalósul az erőforrás újbóli felhasználása azáltal, hogy egy cím több felhasználóhoz is kapcsolódhat, illetve egy felhasználó esetén is többször megjelenhet. Lehet például számlázási és szállítási cím is.
+	-Megrendelések. Ez felhasználja a másik két alap entitást.
+
+Egy-egy rendelés tárolja melyik ügyfél milyen termékeket rendelt.
+Rendelés leadásakor a raktáron lévő árukészlet csökken. Minden termék tudja saját magáról hány darab van belőle.
+
+Arra, hogy mi történjen, ha nincs elegendő raktáron egy rendelés teljesítéséhez, több iskola is létezik:
+	-A maradék készletet adjuk el.
+	-A megrendelő nem szembesül a kevesebb készlettel. A rendelését befogadjuk. Egyszer (vagy akár mindig) "negatívba" engedi a raktárkészletet. De egyúttal jelez a webshop tulajdonosának, hogy azonnal után kell rendelnie.
+	-Visszautasítjuk csak ennek a terméknek a megrendelését.
+	-Visszautasítjuk a teljes megrendelést.
+Én ez utóbbit választottam, mert programozástechnikailag ezzel a rollback funkciót is lehetőségem volt használni. Mert például, ha a rendelési lista feldolgozása során nem az első termék esetén akadunk fent a kevesebb darabszámon, akkor a megelőző termékek készletcsökkentését vissza kell csináltatni.
+
+A másik ilyen, amit szintén csak azért oldottam meg "bonyolultabban" hogy további funkciókat tudjak használni, az a termékek pontozása. Itt sokkal egyszerűbb megoldás lenne az átlagot is eltárolni az adatbázisban. Igaz ugyan, hogy ez redundáns adat tárolás lenne, de se sok tárhelyet, se nagy inkonzisztenciát nem tudna jelenteni egy esetleges eltárolás közbeni adatbázis-kezelő hiba esetén sem. Mivel a következő szavazat leadásakor úgyis újra számolódna az átlag, így maximum a legutolsó szavazat nem számolódna bele az átlagba egy következő pontozás leadásáig. (Mert akkor úgyis újra ki kell számolni az összes addig leadott szavazat alapján.) Viszont így lehetőségem nyílt a Transient funkció és a Lazy kontra EAGER betöltés használatára is. Amikor több terméket listázok, akkor LAZY betöltést választva az pontozás nem töltődik be, ezáltal gyorsabb lesz a lista elkészítése, az ügyfél kérés kiszolgálása. Viszont egy konkrét termék kiválasztásakor EAGER betöltéssel a pontszámokat is betölti és kiszámolja belőle az átlag pontot, ami így szintén egy attribútuma az adott terméket reprezentáló entitásnak. De egy olyan attribútuma, ami nincs eltárolva az adatbázisban.
+Megjegyezném ég, hogy a pontszámok nem külön entitásként, hanem egy Embended listában tárolódnak. Így mindamellett, hogy egyébként is ez lenne az ésszerű tárolási mód, használhattam ezt az adatösszerendelési, tárolási formát is.
+
+Természetesen minden funkcióhoz írtam automatizálható teszteseteket. Sőt! Ahol kritériumok is kötődnek a bemenő adatokhoz, pl. nem lehet negatív, vagy nulla darabszámot rendelni, ott ezekre további teszteseteket is írtam.
+Vagy például az irányító számra készítettem egy saját validációt, ami ellenőrzi, hogy pontosan 4 darab számjegyből áll-e. Ennek a tesztelését egyetlen Repeated teszttel végeztem el, ami sokféle adattal kitöltött HTTP command-dal sorozza meg a Controller-en keresztül az ezt ellenőrző validátort.
+Kézi teszteléshez pedig készítettem kiadható http parancsokat is.
+
+A hatékonyabb konténerizáció érdekében layered docker konténer összeállítását támogató beállítást adtam meg a pom-xml-ben, és ennek megfelelően írtam meg a dockerfile-t is.
+
+A dokumentáláshoz pedig a Swagger annotációiban adtam meg az egyes metódusok, attribútumok leírását, minta adatait. Így az alkalmazás egy egyszerű webes felületen is tesztelhető.
+
+Exner László, 2021. szeptember 6.
